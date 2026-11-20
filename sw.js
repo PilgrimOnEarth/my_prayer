@@ -1,8 +1,8 @@
 // 오프라인 지원: 앱 파일은 설치 때 저장하고, 글꼴은 처음 불러올 때 저장한다.
-// 앱 내용을 고치면 VERSION 숫자를 올려야 이전 저장본이 지워진다.
-const VERSION = 'v1';
+// index.html 등 앱 파일을 고치면 VERSION 숫자를 올린다. 기도문(prayers.txt)만 고칠 때는 올릴 필요 없다.
+const VERSION = 'v2';
 const CACHE = 'my-prayer-' + VERSION;
-const SHELL = ['./', 'index.html', 'manifest.webmanifest', 'icons/icon.svg', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png'];
+const SHELL = ['./', 'index.html', 'prayers.txt', 'manifest.webmanifest', 'icons/icon.svg', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting()));
@@ -25,6 +25,15 @@ self.addEventListener('fetch', e => {
     e.respondWith(
       fetch(req).then(res => { const copy = res.clone(); caches.open(CACHE).then(c => c.put('index.html', copy)); return res; })
         .catch(() => caches.match('index.html'))
+    );
+    return;
+  }
+
+  // 기도문(prayers.txt): 온라인이면 항상 최신본, 오프라인이면 저장본
+  if (url.origin === location.origin && url.pathname.endsWith('/prayers.txt')) {
+    e.respondWith(
+      fetch(req).then(res => { const copy = res.clone(); caches.open(CACHE).then(c => c.put('prayers.txt', copy)); return res; })
+        .catch(() => caches.match('prayers.txt'))
     );
     return;
   }
