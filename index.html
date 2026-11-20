@@ -83,7 +83,13 @@ header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var
 .body{font-family:var(--text);font-size:calc(var(--fs) * 1px);line-height:1.95;word-break:keep-all;overflow-wrap:break-word}
 .body p{margin:0 0 .9em}
 .body p.rub{color:var(--muted)}
-.mk{color:var(--accent);font-size:.8em;margin-right:.2em}
+/* 기호(○ ● ◎ ╋ ┼)는 글꼴에 없는 폰이 있어서 글자 대신 CSS 도형으로 그린다. 글자는 복사용으로 남긴다. */
+.mk{display:inline-block;box-sizing:border-box;font-size:0;color:var(--accent);--d:calc(var(--fs) * .56px);width:var(--d);height:var(--d);margin-right:calc(var(--fs) * .3px);vertical-align:middle;position:relative;top:calc(var(--fs) * -.03px)}
+.m-o{border:calc(var(--fs) * .07px) solid currentColor;border-radius:50%}
+.m-b{background:currentColor;border-radius:50%}
+.m-t{border:calc(var(--fs) * .07px) solid currentColor;border-radius:50%;background:radial-gradient(circle closest-side,transparent 0 28%,currentColor 32% 58%,transparent 62%)}
+.m-x{background:linear-gradient(currentColor,currentColor) center/100% 18% no-repeat,linear-gradient(currentColor,currentColor) center/18% 100% no-repeat}
+.m-xl{background:linear-gradient(currentColor,currentColor) center/100% 10% no-repeat,linear-gradient(currentColor,currentColor) center/10% 100% no-repeat}
 .empty{color:var(--muted);font-family:var(--ui);font-size:14px;margin:0}
 details.en{margin-top:10px;border-top:1px dashed var(--line);padding-top:10px}
 details.en summary{cursor:pointer;color:var(--accent);font-weight:500;min-height:40px;display:flex;align-items:center}
@@ -185,7 +191,8 @@ function fmt(body){
   return body.split('\n\n').map(par => {
     const m = par.match(/^\s*([○●◎╋])/);
     const cls = m ? (m[1] === '●' ? 'resp' : m[1] === '╋' ? 'rub' : '') : '';
-    const html = esc(par).replace(/([○●◎╋⭗])/g, '<span class="mk">$1</span>').replace(/\n/g, '<br>');
+    const MK = {'○':'m-o', '●':'m-b', '◎':'m-t', '╋':'m-x', '┼':'m-xl', '⭗':'m-t'};
+    const html = esc(par).replace(/([○●◎╋┼⭗])/g, (c) => '<span class="mk ' + MK[c] + '">' + c + '</span>').replace(/\n/g, '<br>');
     return '<p' + (cls ? ' class="'+cls+'"' : '') + '>' + html + '</p>';
   }).join('');
 }
