@@ -1,6 +1,6 @@
 // 오프라인 지원: 앱 파일은 설치 때 저장하고, 글꼴은 처음 불러올 때 저장한다.
 // index.html 등 앱 파일을 고치면 VERSION 숫자를 올린다. 기도문(prayers.txt)만 고칠 때는 올릴 필요 없다.
-const VERSION = 'v2';
+const VERSION = 'v3';
 const CACHE = 'my-prayer-' + VERSION;
 const SHELL = ['./', 'index.html', 'prayers.txt', 'manifest.webmanifest', 'icons/icon.svg', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png'];
 
